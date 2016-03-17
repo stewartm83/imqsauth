@@ -7,6 +7,8 @@ import (
 	"github.com/IMQS/authaus"
 	"github.com/IMQS/serviceauth"
 	"github.com/IMQS/yfws"
+	"golang.org/x/net/websocket"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -81,12 +83,15 @@ type userGroupsResponseJson struct {
 }
 
 type ImqsCentral struct {
-	Config    *Config
-	Central   *authaus.Central
-	Yellowfin *Yellowfin
+	Config               *Config
+	Central              *authaus.Central
+	Yellowfin            *Yellowfin
+	WebSocketConnections map[int]*websocket.Conn
+	id                   int
 }
 
 func (x *ImqsCentral) RunHttp() error {
+	x.WebSocketConnections = make(map[int]*websocket.Conn)
 
 	// The built-in go ServeMux does not support differentiating based on HTTP verb, so we have to make
 	// the request path unique for each verb. I think this is OK as far as API design is concerned - at least in this domain.
@@ -153,6 +158,10 @@ func (x *ImqsCentral) RunHttp() error {
 	smux.HandleFunc("/reset_password_finish", makehandler(HttpMethodPost, httpHandlerResetPasswordFinish, 0))
 	smux.HandleFunc("/users", makehandler(HttpMethodGet, httpHandlerGetUsers, 0))
 	smux.HandleFunc("/groups", makehandler(HttpMethodGet, httpHandlerGetGroups, 0))
+
+	smux.Handle("/authnotifications", websocket.Handler(x.handleWebSocket))
+
+	x.Central.Log.Infof("ImqsAuth is trying to listen for websockets on %v:%v", x.Config.Authaus.HTTP.Bind, x.Config.Authaus.HTTP.Port)
 
 	server := &http.Server{}
 	server.Handler = smux
@@ -619,6 +628,63 @@ func httpHandlerSetGroupRoles(central *ImqsCentral, w http.ResponseWriter, r *ht
 		central.Central.Log.Warnf("Group '%v' not found: %v", groupname, e)
 		authaus.HttpSendTxt(w, http.StatusNotFound, fmt.Sprintf("Group '%v' not found: %v", groupname, e))
 	}
+
+	// get all identities and their groups
+	identities, err := central.Central.GetAuthenticatorIdentities()
+	if err != nil {
+		central.Central.Log.Errorf("Error reading identities: %v\n", err)
+		return
+	}
+
+	// now find all identities which belong to the group in question,
+	// skipping the user that made the request
+	modifiedIdentities := make([]string, 0, 10)
+
+	for _,identity := range identities {
+		if r.token.Identity == identity {
+			// skip
+			continue
+		 }
+		roles := getRolesList(central, identity)
+		if containsElement(groupname, roles) {
+			modifiedIdentities = append(modifiedIdentities, identity)
+		}
+	}
+	if len(modifiedIdentities) > 0 {
+		central.sendAll("auth:logout:" + strings.Join(modifiedIdentities, " "))
+	}
+}
+
+func containsElement(elem string, list []string) bool {
+	for _,s := range list {
+		if s == elem {
+			return true
+		}
+	}
+	return false
+}
+
+func getRolesList(central *ImqsCentral, identity string) []string {
+	permStr := ""
+	roles := make([]string, 0, 10)
+	if perm, e := central.Central.GetPermit(identity); e == nil {
+		if permRoles, eDecode := authaus.DecodePermit(perm.Roles); eDecode == nil {
+			if roleNames, eGetNames := authaus.GroupIDsToNames(permRoles, central.Central.GetRoleGroupDB()); eGetNames == nil {
+				permStr = strings.Join(roleNames, " ")
+				for _,s := range strings.Split(permStr, " ") {
+					roles = append(roles, s)
+				}
+				return roles
+			} else {
+				central.Central.Log.Warnf("(Http.getRolesList) Error converting role IDs to names: %v\n", eGetNames)
+			}
+		} else {
+			central.Central.Log.Warnf("(Http.getRolesList) Error decoding permit: %v\n", eDecode)
+		}
+	} else {
+		central.Central.Log.Warnf("(Http.getRolesList) Error retrieving permit: %v\n", e)
+	}
+	return roles
 }
 
 func httpHandlerSetUserGroups(central *ImqsCentral, w http.ResponseWriter, r *httpRequest) {
@@ -668,6 +734,7 @@ func httpHandlerSetUserGroups(central *ImqsCentral, w http.ResponseWriter, r *ht
 		}
 	}
 	*/
+	central.sendAll("auth:logout:" + identity)
 }
 
 func httpHandlerSetPassword(central *ImqsCentral, w http.ResponseWriter, r *httpRequest) {
@@ -769,4 +836,66 @@ func httpHandlerGetGroups(central *ImqsCentral, w http.ResponseWriter, r *httpRe
 	} else {
 		httpSendGroupsJson(w, groups)
 	}
+}
+
+func (central *ImqsCentral)handleWebSocket(ws *websocket.Conn) {
+	permOK := false
+	closeConnection := false
+	if token, err := authaus.HttpHandlerPrelude(&central.Config.Authaus.HTTP, central.Central, ws.Request()); err == nil {
+		if permList, errDecodePerms := authaus.PermitResolveToList(token.Permit.Roles, central.Central.GetRoleGroupDB()); errDecodePerms != nil {
+			closeConnection = true
+		} else {
+			if !permList.Has(PermEnabled) {
+				closeConnection = true
+			} else {
+				permOK = true
+			}
+		}
+	} else {
+		closeConnection = true
+	}
+
+	if !permOK {
+		closeConnection = true
+	}
+
+	if closeConnection {
+		ws.Close()
+		return
+	}
+
+	id := central.Add(ws)
+
+	central.Central.Log.Infof("Added auth web socket client %d", id)
+	var msg string
+	for {
+		// Currently we should not receive anything on this websocket, should we remove this code entirely?
+		err := websocket.Message.Receive(ws, &msg)
+
+		if (err != nil) && (err != io.EOF) {
+			central.Central.Log.Infof("handleWebSocket: EOF or Error on websocket %d: %v", id, err)
+			ws.Close()
+			delete(central.WebSocketConnections, id)
+			central.Central.Log.Infof("handleWebSocket: Web socket connection removed %d", id)
+			return
+		}
+	}
+}
+
+func (central *ImqsCentral)sendAll(msg string){
+	for id,ws := range central.WebSocketConnections {
+		err := websocket.Message.Send(ws,msg);
+		if (err != nil) && (err != io.EOF) {
+			central.Central.Log.Infof("sendAll: EOF or Error on websocket %d: %v", id, err)
+			ws.Close()
+			delete(central.WebSocketConnections, id);
+			central.Central.Log.Infof("sendAll: Web socket connection removed %d", id)
+		}
+	}
+}
+
+func (central *ImqsCentral) Add(ws *websocket.Conn) int {
+	central.id += 1
+	central.WebSocketConnections[central.id] = ws
+	return central.id
 }

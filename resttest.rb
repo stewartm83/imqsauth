@@ -360,4 +360,17 @@ class AdminTasks < AuthBase
 		}
 	end
 
+	def test_websocket		
+		res = `go test github.com/IMQS/imqsauth/imqsauth -test.cpu 2`
+		result = res.split(' ')
+		print "First result item: " + result[0] + "\n"
+		assert(result[0]=='ok')
+	end
+
+	def test_websocket_race		
+		res = `go test -race github.com/IMQS/imqsauth/imqsauth -test.cpu 2`
+		result = res.split(' ')
+		print "First result item: " + result[0] + "\n"
+		assert(result[0]=='ok')
+	end
 end
