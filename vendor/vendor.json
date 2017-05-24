@@ -1,0 +1,111 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "code.google.com/p/winsvc/svc",
+			"revision": ""
+		},
+		{
+			"path": "context",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+0zH0szbSv+vpkNPIEF7jtCqsJ8=",
+			"path": "github.com/BurntSushi/migration",
+			"revision": "c45b897f13350786ccaf2b7403b92b1c7ad85844",
+			"revisionTime": "2014-01-25T04:57:55Z"
+		},
+		{
+			"checksumSHA1": "i59Ia1K/heobg/6f4OhExS8nRl4=",
+			"path": "github.com/IMQS/authaus",
+			"revision": "be9255fa740a891e55aec665367847ebd0522a86",
+			"revisionTime": "2017-03-02T09:30:44Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "ppqRQzN+NQ983V5W9TV87AgR8tk=",
+			"path": "github.com/IMQS/cli",
+			"revision": "15632430809604e76a2fc6ec9dd66a3a456d4e4d",
+			"revisionTime": "2015-10-22T08:26:34Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "FFes43LG2C2ghL2TMQwf287n37E=",
+			"path": "github.com/IMQS/log",
+			"revision": "4da8bb16dc28b528d627a0ded2aea5bc0fdec6b8",
+			"revisionTime": "2016-08-10T14:30:49Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "qaGprGoPbW5QexDHRTR5F/Z45FE=",
+			"path": "github.com/IMQS/serviceauth",
+			"revision": "cc428e3f56953c9be39c4dccf59d932c8ace513e",
+			"revisionTime": "2017-01-27T09:22:18Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "rRdJL+7FbboOyM83R0nTt0wVVHo=",
+			"path": "github.com/IMQS/serviceconfigsgo",
+			"revision": "0755e50c223b438a6e3f5e99f4cbfe5bbddcc092",
+			"revisionTime": "2017-02-15T13:19:18Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "CqkmprO2nP9cELhCBywalZJDV1E=",
+			"path": "github.com/IMQS/yfws",
+			"revision": "221304da8b44ee04b6e07c360e646aa3ae645b03",
+			"revisionTime": "2017-03-09T09:07:54Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "lt+bAMlC3BrjK+DALP3mDmrT908=",
+			"path": "github.com/clbanning/mxj",
+			"revision": "185f4035999c087d40a5bc20c264bfe7f4a99422",
+			"revisionTime": "2017-04-20T14:56:28Z"
+		},
+		{
+			"checksumSHA1": "JXxJXt0QTZGjHGbocNN79jVO9dg=",
+			"path": "github.com/lib/pq",
+			"revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
+			"revisionTime": "2017-03-24T20:46:54Z"
+		},
+		{
+			"checksumSHA1": "5qgm3bboLzPqwTE8EVtNw/PPpGw=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
+			"revisionTime": "2017-03-24T20:46:54Z"
+		},
+		{
+			"checksumSHA1": "oUrA+YA8n2wNRN/OVE8NAnUeOxM=",
+			"path": "github.com/mavricknz/asn1-ber",
+			"revision": "b9df1c2f4213e9acfe05cbd20696ac5fc0d5c70e",
+			"revisionTime": "2015-11-03T22:31:36Z"
+		},
+		{
+			"checksumSHA1": "CFCiud+BxusLgeIED3qKR7KbBF0=",
+			"path": "github.com/mavricknz/ldap",
+			"revision": "f5a958005e43f515b70d9b1a61d9c842ecd507a6",
+			"revisionTime": "2016-02-27T18:47:54Z"
+		},
+		{
+			"checksumSHA1": "1MGpGDQqnUoRpv7VEcQrXOBydXE=",
+			"path": "golang.org/x/crypto/pbkdf2",
+			"revision": "7e9105388ebff089b3f99f0ef676ea55a6da3a7e",
+			"revisionTime": "2017-05-16T03:11:29Z"
+		},
+		{
+			"checksumSHA1": "E8pDMGySfy5Mw+jzXOkOxo35bww=",
+			"path": "golang.org/x/crypto/scrypt",
+			"revision": "7e9105388ebff089b3f99f0ef676ea55a6da3a7e",
+			"revisionTime": "2017-05-16T03:11:29Z"
+		},
+		{
+			"checksumSHA1": "qFPEst808FnIrJPbWDosi+rF8gU=",
+			"path": "gopkg.in/natefinch/lumberjack.v2",
+			"revision": "dd45e6a67c53f673bb49ca8a001fd3a63ceb640e",
+			"revisionTime": "2016-11-04T13:48:45Z"
+		}
+	],
+	"rootPath": "github.com/IMQS/imqsauth"
+}
