@@ -3,24 +3,16 @@
 	"ignore": "test",
 	"package": [
 		{
-			"path": "code.google.com/p/winsvc/svc",
-			"revision": ""
-		},
-		{
-			"path": "context",
-			"revision": ""
-		},
-		{
 			"checksumSHA1": "+0zH0szbSv+vpkNPIEF7jtCqsJ8=",
 			"path": "github.com/BurntSushi/migration",
 			"revision": "c45b897f13350786ccaf2b7403b92b1c7ad85844",
 			"revisionTime": "2014-01-25T04:57:55Z"
 		},
 		{
-			"checksumSHA1": "i59Ia1K/heobg/6f4OhExS8nRl4=",
+			"checksumSHA1": "INJHr7Yx1ITiFS0BYqQcacXOhOU=",
 			"path": "github.com/IMQS/authaus",
-			"revision": "be9255fa740a891e55aec665367847ebd0522a86",
-			"revisionTime": "2017-03-02T09:30:44Z",
+			"revision": "ca892da885d50dbff22641efcc53f81bfd29f7bf",
+			"revisionTime": "2017-05-25T08:05:44Z",
 			"tree": true
 		},
 		{
@@ -65,6 +57,12 @@
 			"revisionTime": "2017-04-20T14:56:28Z"
 		},
 		{
+			"checksumSHA1": "Nt3klRlq5ZgwqFo/bhZ7plWrwbg=",
+			"path": "github.com/golang/sys/windows/svc",
+			"revision": "a55a76086885b80f79961eacb876ebd8caf3868d",
+			"revisionTime": "2017-05-24T02:50:34Z"
+		},
+		{
 			"checksumSHA1": "JXxJXt0QTZGjHGbocNN79jVO9dg=",
 			"path": "github.com/lib/pq",
 			"revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
@@ -99,6 +97,12 @@
 			"path": "golang.org/x/crypto/scrypt",
 			"revision": "7e9105388ebff089b3f99f0ef676ea55a6da3a7e",
 			"revisionTime": "2017-05-16T03:11:29Z"
+		},
+		{
+			"checksumSHA1": "2Coyr3Bq1dPkFg+ZYHEq1+/Rn58=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "a55a76086885b80f79961eacb876ebd8caf3868d",
+			"revisionTime": "2017-05-24T02:50:34Z"
 		},
 		{
 			"checksumSHA1": "qFPEst808FnIrJPbWDosi+rF8gU=",

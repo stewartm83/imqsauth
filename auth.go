@@ -61,7 +61,7 @@ func main() {
 	app.Run()
 }
 
-func exec(cmdName string, args []string, options cli.OptionSet) {
+func exec(cmdName string, args []string, options cli.OptionSet) int {
 
 	// panic(string) to show an error message.
 	// panic(error) will show a stack trace
@@ -183,7 +183,9 @@ func exec(cmdName string, args []string, options cli.OptionSet) {
 
 	if !success {
 		panic("")
+		return 1
 	}
+	return 0
 }
 
 func createDB(config *authaus.Config) bool {
