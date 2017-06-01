@@ -3,6 +3,11 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "context",
+			"revision": "",
+			"tree": true
+		},
+		{
 			"checksumSHA1": "+0zH0szbSv+vpkNPIEF7jtCqsJ8=",
 			"path": "github.com/BurntSushi/migration",
 			"revision": "c45b897f13350786ccaf2b7403b92b1c7ad85844",

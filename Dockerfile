@@ -1,4 +1,7 @@
+#create an image that build and run the auth service
 FROM golang:1.8-alpine
+
+LABEL name="imqs/auth"
 
 # setup GOPATH and friends
 #
@@ -19,6 +22,8 @@ ADD . $GOPATH/src/github.com/IMQS/imqsauth
 
 WORKDIR $GOPATH/src/github.com/IMQS/imqsauth
 
+#install imqsauth to GOBIN (defaults to $GOPATH/bin) imqsauth is now available on your shell
 RUN go-wrapper install    # "go install -v /go/src/github.com/IMQS/imqsauth/"
 
-CMD ["go-wrapper", "run"] # ["imqsauth"]
+
+CMD ["imqsauth", "-nosvc", "run"]
