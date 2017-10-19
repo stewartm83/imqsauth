@@ -11,6 +11,7 @@ import (
 
 	"github.com/IMQS/authaus"
 	"github.com/IMQS/cli"
+	"github.com/IMQS/gowinsvc/service"
 	"github.com/IMQS/imqsauth/cros"
 	"github.com/IMQS/imqsauth/imqsauth"
 )
@@ -71,7 +72,7 @@ func main() {
 	app.Run()
 }
 
-func exec(cmdName string, args []string, options cli.OptionSet) {
+func exec(cmdName string, args []string, options cli.OptionSet) int {
 
 	// panic(string) to show an error message.
 	// panic(error) will show a stack trace
@@ -96,7 +97,7 @@ func exec(cmdName string, args []string, options cli.OptionSet) {
 		}
 	}()
 
-	_, cMode :=  options["d"]
+	_, cMode := options["d"]
 
 	ic := &imqsauth.ImqsCentral{}
 	ic.Config = &imqsauth.Config{}
@@ -178,7 +179,7 @@ func exec(cmdName string, args []string, options cli.OptionSet) {
 	case "resetauthgroups":
 		success = imqsauth.ResetAuthGroups(ic)
 	case "run":
-		if options.Has("nosvc") || !authaus.RunAsService(handlerNoRetVal) {
+		if options.Has("nosvc") || !service.RunAsService(handlerNoRetVal) {
 			success = false
 			fmt.Print(handler())
 		}
@@ -204,6 +205,7 @@ func exec(cmdName string, args []string, options cli.OptionSet) {
 	if !success {
 		panic("")
 	}
+	return 0
 }
 
 func createDB(config *authaus.Config) bool {
